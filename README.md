@@ -32,3 +32,8 @@ Apply the featuregate using `oc apply -f manifests/tracing-kubelet`
 ### Kube API tracing
 
 Apply the necessary changes using `oc apply -f manifests/tracing-kubeapi`
+
+
+### Etcd tracing
+
+Unmanage `etcd` and run the script (update `instace-id`) on each master node

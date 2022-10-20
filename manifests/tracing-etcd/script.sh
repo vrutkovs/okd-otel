@@ -1,0 +1,1 @@
+sed -i 's;  --metrics=extensive \\\\\\n;  --metrics=extensive \\\\\\n --experimental-enable-distributed-tracing=true \\\\\\n --experimental-distributed-tracing-address=0.0.0.0:4317 \\\\\\n --experimental-distributed-tracing-service-name=etcd \\\\\\n --experimental-distributed-tracing-instance-id=ip-10-0-207-184 \\\\\\n;g' /etc/kubernetes/manifests/etcd-pod.yaml
