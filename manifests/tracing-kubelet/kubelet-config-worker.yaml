@@ -1,0 +1,12 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: KubeletConfig
+metadata:
+  name: worker-kubelet-tracing
+spec:
+  machineConfigPoolSelector:
+    matchLabels:
+      pools.operator.machineconfiguration.openshift.io/worker: ''
+  kubeletConfig:
+    tracing:
+      endpoint: "127.0.0.1:4317"
+      samplingRatePerMillion: 999999

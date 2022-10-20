@@ -24,3 +24,7 @@ See `oc describe route/oteljaeger` for Jaeger URL
 ### CRI-O tracing
 
 Apply the MachineConfig using `oc apply -f manifests/tracing-crio`
+
+### Kubelet tracing
+
+Apply the featuregate using `oc apply -f manifests/tracing-kubelet`
