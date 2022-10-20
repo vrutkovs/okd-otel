@@ -1,0 +1,10 @@
+apiVersion: operator.openshift.io/v1
+kind: KubeAPIServer
+metadata:
+  name: cluster
+spec:
+  unsupportedConfigOverrides:
+    apiServerArguments:
+      tracing-config-file:
+        - >-
+          /etc/kubernetes/static-pod-certs/configmaps/trace.yaml

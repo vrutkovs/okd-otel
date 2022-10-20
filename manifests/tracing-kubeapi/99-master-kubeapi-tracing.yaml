@@ -1,0 +1,18 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  name: 99-master-kubeapi-tracing
+  labels:
+    machineconfiguration.openshift.io/role: master
+spec:
+  config:
+    ignition:
+      version: 3.2.0
+    storage:
+      files:
+        - contents:
+            source: >-
+              data:,apiVersion%3A%20apiserver.config.k8s.io%2Fv1alpha1%0Akind%3A%20TracingConfiguration%0AsamplingRatePerMillion%3A%20999999
+          mode: 420
+          overwrite: true
+          path: /etc/kubernetes/static-pod-resources/kube-apiserver-certs/configmaps/trace.yaml
