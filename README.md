@@ -28,3 +28,7 @@ Apply the MachineConfig using `oc apply -f manifests/tracing-crio`
 ### Kubelet tracing
 
 Apply the featuregate using `oc apply -f manifests/tracing-kubelet`
+
+### Kube API tracing
+
+Apply the necessary changes using `oc apply -f manifests/tracing-kubeapi`
