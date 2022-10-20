@@ -4,9 +4,25 @@ metadata:
   name: oteljaeger
   namespace: otel
 spec:
-  allInOne:
+  query:
+    options:
+      query.grpc.tls.enabled: false
+  strategy: production
+  collector:
     options:
       collector.grpc.tls.enabled: false
       collector.otlp.grpc.tls.enabled: false
-      query.grpc.tls.enabled: false
-      reporter.grpc.tls.enabled: false
+  storage:
+    type: elasticsearch
+    elasticsearch:
+      nodeCount: 1
+      storage:
+        storageClassName: gp3-csi
+        size: 50Gi
+      resources:
+        requests:
+          cpu: 200m
+          memory: 4Gi
+        limits:
+          memory: 4Gi
+      redundancyPolicy: ZeroRedundancy
