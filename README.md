@@ -20,3 +20,7 @@ Based on https://github.com/sallyom/otel-kubeadm
 * When CRDs have applied create a Jeager instance: `oc apply -f manifests/jaeger`
 
 See `oc describe route/oteljaeger` for Jaeger URL
+
+### CRI-O tracing
+
+Apply the MachineConfig using `oc apply -f manifests/tracing-crio`
