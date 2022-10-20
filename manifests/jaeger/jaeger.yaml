@@ -3,3 +3,10 @@ kind: Jaeger
 metadata:
   name: oteljaeger
   namespace: otel
+spec:
+  allInOne:
+    options:
+      collector.grpc.tls.enabled: false
+      collector.otlp.grpc.tls.enabled: false
+      query.grpc.tls.enabled: false
+      reporter.grpc.tls.enabled: false
