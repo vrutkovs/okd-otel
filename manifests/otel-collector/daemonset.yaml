@@ -21,10 +21,15 @@ spec:
       - key: node-role.kubernetes.io/control-plane
         operator: Exists
         effect: NoSchedule
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
       securityContext: {}
       serviceAccount: otel
       serviceAccountName: otel
       hostNetwork: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
       containers:
       - args:
           - "/otelcol"
