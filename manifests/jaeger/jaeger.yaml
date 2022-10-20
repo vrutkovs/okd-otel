@@ -10,3 +10,17 @@ spec:
       collector.otlp.grpc.tls.enabled: false
       query.grpc.tls.enabled: false
       reporter.grpc.tls.enabled: false
+  storage:
+    type: elasticsearch
+    elasticsearch:
+      nodeCount: 2
+      storage:
+        storageClassName: gp2
+        size: 5Gi
+      resources:
+        requests:
+          cpu: 200m
+          memory: 4Gi
+        limits:
+          memory: 4Gi
+      redundancyPolicy: ZeroRedundancy

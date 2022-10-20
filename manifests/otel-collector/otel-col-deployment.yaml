@@ -13,7 +13,7 @@ spec:
       component: otel-collector
   minReadySeconds: 5
   progressDeadlineSeconds: 120
-  replicas: 1 #TODO - adjust this to your own requirements
+  replicas: 2
   template:
     metadata:
       labels:
