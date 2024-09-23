@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: grafana-agent
+  name: grafana-alloy
   labels:
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
@@ -11,13 +11,13 @@ metadata:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: grafana-agent-traces
-  namespace: grafana-agent
+  name: grafana-alloy
+  namespace: grafana-alloy
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: grafana-agent-traces
+  name: grafana-alloy
 rules:
 - apiGroups:
   - ""
@@ -27,6 +27,7 @@ rules:
   - services
   - endpoints
   - pods
+  - pods/log
   - events
   verbs:
   - get
@@ -40,63 +41,63 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: grafana-agent-traces
+  name: grafana-alloy
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: grafana-agent-traces
+  name: grafana-alloy
 subjects:
 - kind: ServiceAccount
-  name: grafana-agent-traces
-  namespace: grafana-agent
+  name: grafana-alloy
+  namespace: grafana-alloy
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: grafana-agent-traces-scc
+  name: grafana-alloy-scc
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: system:openshift:scc:privileged
 subjects:
 - kind: ServiceAccount
-  name: grafana-agent-traces
-  namespace: grafana-agent
+  name: grafana-alloy
+  namespace: grafana-alloy
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    name: grafana-agent-traces
-  name: grafana-agent-traces
-  namespace: grafana-agent
+    name: grafana-alloy
+  name: grafana-alloy
+  namespace: grafana-alloy
 spec:
   ports:
-  - name: grafana-agent-traces-http-metrics
-    port: 8080
-    targetPort: 8080
-  - name: grafana-agent-traces-otlp
+  - name: grafana-alloy-http-metrics
+    port: 12345
+    targetPort: 12345
+  - name: grafana-alloy-otlp
     port: 4317
     protocol: TCP
     targetPort: 4317
   selector:
-    name: grafana-agent-traces
+    name: grafana-alloy
 ---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: grafana-agent-traces
-  namespace: grafana-agent
+  name: grafana-alloy
+  namespace: grafana-alloy
 spec:
   minReadySeconds: 10
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      name: grafana-agent-traces
+      name: grafana-alloy
   template:
     metadata:
       labels:
-        name: grafana-agent-traces
+        name: grafana-alloy
     spec:
       tolerations:
       - key: node-role.kubernetes.io/control-plane
@@ -108,29 +109,35 @@ spec:
       hostNetwork: true
       containers:
       - args:
-        - -config.file=/etc/agent/agent.yaml
-        - -server.http.address=0.0.0.0:8080
+        - run
+        - /etc/alloy/config.alloy
         command:
-        - /bin/agent
+        - /bin/alloy
         env:
         - name: HOSTNAME
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
-        image: grafana/agent:v0.27.0
+        image: docker.io/grafana/alloy:v1.3.1
         imagePullPolicy: IfNotPresent
-        name: grafana-agent-traces
+        name: grafana-alloy
         ports:
-        - containerPort: 8080
-          name: http-metrics
+        - containerPort: 12345
+          name: http
         - containerPort: 4317
           name: otlp
           protocol: TCP
         volumeMounts:
-        - mountPath: /etc/agent
-          name: grafana-agent-traces
-      serviceAccountName: grafana-agent-traces
+        - mountPath: /etc/alloy
+          name: grafana-alloy
+        - mountPath: /var/log/pods
+          name: pod-logs
+      serviceAccountName: grafana-alloy
       volumes:
       - configMap:
-          name: grafana-agent-traces
-        name: grafana-agent-traces
+          name: grafana-alloy
+        name: grafana-alloy
+      - hostPath:
+          path: /var/log/pods
+          type: Directory
+        name: pod-logs
